@@ -4,24 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Hangman!</title>
 </head>
 <body>
 
 <script>
+
+    // create an array of 'random' words to generate
     var words =["monkey", "elephant", "bird", "lion", "tiger"]
 
+    // randomly pick a word from the word array 
     var word = words[Math.floor(Math.random() * words.length)];
     console.log(word)
 
-var answerArray = [];
-for (var i = 0; i < word.length; i++) {
- answerArray[i] = "_";
-}
- console.log(answerArray)
 
- var remainingLetters = word.length;
- console.log(remainingLetters)
+    var answerArray = [];
+    for (var i = 0; i < word.length; i++) {
+    answerArray[i] = "_";
+    }
+    console.log(answerArray)
+
+    var remainingLetters = word.length;
+    console.log(remainingLetters)
         
         
         
