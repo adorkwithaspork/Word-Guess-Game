@@ -1,51 +1,175 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hangman!</title>
+	<title>Hangman</title>
+	<!-- Bootstrap CSS-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- My CSS -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<!-- Google Fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Bangers|Creepster' rel='stylesheet' type='text/css'>
+	<!-- jQuery Link -->
+	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 </head>
 <body>
-<h1>Hangman!</h1>
-<script>
-// Create an array of words
-var words = [
-"javascript",
-"monkey",
-"amazing",
-"pancake"
-];
-// Pick a random word
-var word = words[Math.floor(Math.random() * words.length)];
-// Set up the answer array
-var answerArray = [];
-for (var i = 0; i < word.length; i++) {
-answerArray[i] = "_";
-}
-var remainingLetters = word.length;
-// The game loop
-while (remainingLetters > 0) {
-// Show the player their progress
-document.write(answerArray.join(" "));
-// Get a guess from the player
-var guess = prompt("Guess a letter, or click Cancel to stop playing.");
-if (guess === null) {
-// Exit the game loop
-break;
-} else if (guess.length !== 1) {
-alert("Please enter a single letter.");
-} else {
-// Update the game state with the guess
-for (var j = 0; j < word.length; j++) {
-if (word[j] === guess) {
-answerArray[j] = guess;
-remainingLetters--;
-}
-}
-}
-// The end of the game loop
-}
-// Show the answer and congratulate the player
-alert(answerArray.join(" "));
-alert("Good job! The answer was " + word);
+
+
+<!-- html -->
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<h1 class="text-center">Drinks</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<h2 class="text-center">Press any key to begin!</h2>
+			<p class="text-center">(the alcoholic kind...)</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<h3 id="answerArea" class="text-center"></h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-5 col-md-offset-2">
+			<h2 id="guessUpdate">Guessed Letters: </h2>
+		</div>
+		<div class="col-md-4">
+			<h2 id="lastWord">Last Word: </h2>
+		</div>
+	<div class="row">
+		<div class="col-md-5 col-md-offset-2">
+			<h2 id="remainingGuesses">Remaining Guesses: </h2>
+		</div>
+		<div class="col-md-2">
+			<h2 id="wins">Wins: 0</h2>
+		</div>
+		<div class="col-md-2">
+			<h2 id="losses">Losses: 0</h2>
+		</div>
+<!-- 		<div class="col-md-4">
+			<h2 id="lastWord">Last Word: </h2>
+		</div> -->
+<!-- 		<div class="col-md-6 col-md-offset-1">
+			<h2 id="guessUpdate">Guessed Letters: </h2>
+		</div> -->
+<!-- 		<div class="col-md-4">
+			<h2 id="remainingGuesses">Remaining Guesses: </h2>
+		</div> -->
+<!-- 	<div class="col-md-2">
+			<h2 id="losses">Losses: 0</h2>
+		</div> -->
+	</div>
+
+
+
+<script type="text/javascript">
+
+
+// Defining variables 
+var wordList = ["mojito", "margartia", "wine", "beer", "shots", "martini", "sangria", "martinez", "manhattan", "daiquiri", "sazerack"]
+var answer = wordList[Math.floor(Math.random() * wordList.length)];
+var lettersinanswer = answer.split("");  
+var numblanks = lettersinanswer.length;
+var answerprogress = []; 
+var guesses = 9;
+var wins = 0;
+var losses = 0;
+var guessedLetters = [];
+var wrongGuesses = [];
+var winUpdate = "Wins: " + wins;
+// Populates the answerprogress array with the appropriate number of blank spaces
+for (var i = 0; i < numblanks; i++){
+	answerprogress.push("_ ");
+};
+// This function resets the game if you win or lose
+function reset() {
+	guesses = 9;    
+	guessedLetters = [];
+	wrongGuesses = [];
+	counter = 0;
+	answer = wordList[Math.floor(Math.random() * wordList.length)];
+	lettersinanswer = answer.split("");
+	numblanks = lettersinanswer.length;
+	answerprogress = [];
+	for (var i=0; i<numblanks; i++){
+		answerprogress.push("_ ");
+	};
+};
+// This function compares two arrays to see if they are equal
+function compareArrays(array1, array2) {
+	for (i = 0; i < array1.length; i++) {
+		if (array1[i] !== array2[i]) {
+			return false;
+		};
+	};
+	return true;
+};
+// If you guess correctly this function changes the corresponding blank(s) into the letter(s)
+function updateblanks(guess){
+	for (var i = 0; i < lettersinanswer.length; i++) {
+		if (guess == lettersinanswer[i]) {
+			answerprogress[i] = guess;			
+		};
+	};
+};
+// Loads the first word onto the page when the page loads
+function start() {
+	var answerUpdate = answerprogress.join(" ");
+	document.querySelector("#answerArea").innerHTML = answerUpdate;
+	var remainingGuesses = "Remaining Guesses: " + guesses;
+	document.querySelector("#remainingGuesses").innerHTML = remainingGuesses;
+};
+// Runs the start() function when the page loads
+document.onLoad = start();
+// Runs a bunch of code when a key is pressed
+document.onkeyup = function(event) {
+	// Turns user's keystroke into a string
+	var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+	// This code only runs if you press a key you haven't pressed before
+	if (guessedLetters.indexOf(userGuess) == -1) {
+		// If you guessed wrong
+	 	if (answer.indexOf(userGuess) == -1) {
+	 		guesses = guesses -1;
+	 		guessedLetters.push(userGuess);
+	 		wrongGuesses.push(userGuess);
+	 		// When you run out of guesses you lose
+	 		if (guesses == 0) {
+	 			losses++;
+	 			document.querySelector("#lastWord").innerHTML = "Last Word: " + answer;
+	 			reset();
+	 		};
+	 	// When you guess right
+	 	} else {
+	 		guessedLetters.push(userGuess);
+	 		updateblanks(userGuess);
+	 		// When the arrays are equal you win
+	 		if (compareArrays(lettersinanswer, answerprogress) == true) {
+	 			wins++;
+	 			document.querySelector("#lastWord").innerHTML = "Last Word: " + answer;
+	 			reset();
+	 		};
+	 	};
+	 	// Defining variables to update the page
+		var winUpdate = "Wins: " + wins;
+		var guessUpdate = "Guessed Letters: " + wrongGuesses;
+		remainingGuesses = "Remaining Guesses: " + guesses;
+		var lossesUpdate = "Losses: " + losses;
+		answerUpdate = answerprogress;
+		// Updating the page
+		document.querySelector("#wins").innerHTML = winUpdate;
+		document.querySelector("#guessUpdate").innerHTML = guessUpdate;
+		document.querySelector("#remainingGuesses").innerHTML = remainingGuesses;
+		document.querySelector("#answerArea").innerHTML = answerUpdate.join(" ");
+		document.querySelector("#losses").innerHTML = lossesUpdate;
+	};
+};
 </script>
+	
+
+
+
 </body>
 </html>
